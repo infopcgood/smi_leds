@@ -16,6 +16,8 @@ addresses those shortcomings and packages that code into a deployable project.
 You can choose to link to a static C library build with CMake and include it in your
 C/C++ project, or you can choose the python module, which can be installed from pip.
 
+IMPORTANT: This code does not run on a Raspberry Pi 5!
+
 ## Design philosophy
 
 This module is for advanced users of LED strips and thus it may be missing some of the 
@@ -51,6 +53,11 @@ out to 8 (or 16) strips. If you have 4 strips, send 4 strips of data and then
 
 
 # Installation
+
+## OS Choice
+
+Currently this code only works on a 32 bit Raspberry Pi OS images. 64 bit images are
+currently not supported, but I'll see about getting those working as well.
 
 ## Raspberry Pi Setup
 
@@ -201,21 +208,32 @@ white at 25% brightness:
 The python version is quite similar:
 
 ```
-    # initialize the smi_leds module, starting with a 25% brightness
-    smileds.leds_init(num_leds, 25)
+import smileds
+from time import sleep
 
-    # Build the LED data array
-    leds = bytearray()
-    for strip in range(num_strips):
-        for led in range(num_leds):
-            leds += bytearray((255, 255, 255))
+num_leds = 25
+num_strips = 1
 
-    # Set the buffer into to the smileds module
-    smileds.leds_set(leds)
+# initialize the smi_leds module, starting with a 25% brightness
+smileds.leds_init(num_leds, 25)
 
-    # Shift them out to the strips
-    smileds.leds_send()
+# Build the LED data array
+leds = bytearray()
+for strip in range(num_strips):
+    for led in range(num_leds):
+        leds += bytearray((255, 0, 255))
+
+# Set the buffer into to the smileds module
+smileds.leds_set(leds)
+
+# Shift them out to the strips
+smileds.leds_send()
+
+# Wait while the data is shifted to the SMI bus
+sleep(1)
 ```
+
+This code snipped will turn 25 leds purple on 1 strip at brightness 25%.
 
 # Demo video
 
@@ -227,7 +245,6 @@ Here is a super short demonstration video for this module in action:
 
 This module could use various improvements over time if people are interesting in developing it further:
 
-* Test more PRi models (RPi 5, in particular)
 * Consider adding gamma correction
 * Debug the set_pixel() function to allow changing single pixels
 
