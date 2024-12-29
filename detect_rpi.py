@@ -2,7 +2,7 @@
 
 import sys
 
-# TODO: Find RPI 5 and add to this table
+# TODO: Identify an RPI 5 and throw an error
 VERSION_STRING_MAPPING = {
     # longest strings should go first!
     "Raspberry Pi Model A Plus": ("0x20000000", 400000000),
