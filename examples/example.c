@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 
     // initialize the smi_leds module, starting with a 25% brightness
     leds_init(NUM_LEDS, 25);
+    printf("compiled for %d strips\n", leds_num_strips());
 
     for(float t = 0.0;; t += .01)
     {

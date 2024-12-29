@@ -17,6 +17,7 @@ typedef struct {
 } color_t;
 
 bool leds_init(int init_led_count, uint8_t brightness); // 0 - 100 brightness
+int  leds_num_strips(void);
 void leds_brightness(uint8_t brightness); // 0 - 100
 void leds_clear();
 void leds_set_pixel(uint8_t  channel, uint16_t  pixel, color_t color);

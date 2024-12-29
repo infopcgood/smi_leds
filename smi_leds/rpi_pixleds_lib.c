@@ -206,6 +206,11 @@ bool leds_init(int init_led_count, uint8_t brightness_arg)
     return true;
 }
 
+int leds_num_strips(void)
+{
+    return LED_NCHANS;
+}
+
 void leds_brightness(uint8_t brightness_arg)
 {
     brightness=brightness_arg;

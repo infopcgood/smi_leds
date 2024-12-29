@@ -11,6 +11,12 @@ PyMethodDef smileds_funcs[] =
 		smileds_docs
     },
 	{
+        "leds_num_strips",
+		(PyCFunction)smileds_leds_num_strips,
+		METH_NOARGS,
+		smileds_docs
+    },
+	{
         "leds_brightness",
 		(PyCFunction)smileds_leds_brightness,
 		METH_VARARGS,

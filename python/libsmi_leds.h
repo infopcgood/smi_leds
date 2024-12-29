@@ -4,6 +4,7 @@
 #include <Python.h>
 
 PyObject *smileds_leds_init(PyObject *self, PyObject *args);
+PyObject *smileds_leds_num_strips(PyObject *self, PyObject *args);
 PyObject *smileds_leds_brightness(PyObject *self, PyObject *args);
 PyObject *smileds_leds_clear(PyObject *self, PyObject *args);
 PyObject *smileds_leds_set(PyObject *self, PyObject *args);
