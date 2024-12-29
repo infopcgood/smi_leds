@@ -35,7 +35,7 @@ add_library(smi_leds STATIC smi_leds/rpi_dma_utils.c
                             include/smi_leds.h)
 set_target_properties(smi_leds PROPERTIES PUBLIC_HEADER "include/smi_leds.h")
 separate_arguments(RPI_OPTS UNIX_COMMAND "${RPI_OPTS}")
-target_compile_options(smi_leds PRIVATE ${LED_NCHANS} ${RPI_OPTS} -fPIC)
+target_compile_options(smi_leds PRIVATE ${LED_NCHANS} ${RPI_OPTS} -fPIC -O2)
 
 set( BINARY smi_test )
 add_executable( ${BINARY}

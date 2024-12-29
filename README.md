@@ -217,6 +217,12 @@ The python version is quite similar:
     smileds.leds_send()
 ```
 
+# Troubleshooting
+
+A common problem might be getting a segmentation fault when calling leds_set(), which is caused by sending in the
+wrong buffer size for the current number of strip configuration. If you setup smi_leds with 8 strips, you need to
+pass in a buffer to the C functions that is at least 3 * 8 * NUM_LEDs large.
+
 # Demo video
 
 Here is a super short demonstration video for this module in action:
