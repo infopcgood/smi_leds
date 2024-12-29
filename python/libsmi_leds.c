@@ -19,8 +19,8 @@ PyObject *smileds_leds_init(PyObject *self, PyObject *args)
 
 PyObject *smileds_leds_num_strips(PyObject *self, PyObject *args)
 {
-    ret = leds_num_strips();
-    return PyBool_FromLong(ret);
+    int ret = leds_num_strips();
+    return PyLong_FromLong(ret);
 }
 
 PyObject *smileds_leds_brightness(PyObject *self, PyObject *args)
