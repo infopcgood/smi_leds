@@ -29,7 +29,7 @@ def get_compile_flags():
         nchans = 8
 
     print("Building smi_leds extension for %d channels" % nchans)
-    compile_flags.append("-DLED_NCHANS=%d" % nchans)
+    compile_flags.append("-O2 -DLED_NCHANS=%d" % nchans)
 
     return compile_flags
 
