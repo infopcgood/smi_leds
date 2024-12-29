@@ -6,14 +6,14 @@ from time import sleep
 
 import smileds
 
-# Define the number of LEDs and led strips
+# Define the number of LEDs per strip
 num_leds = 30
-num_strips = 8
 
 # init the smi module with an initial brightness of 25%
 smileds.leds_init(num_leds, 25)
 smileds.leds_clear()
-print("Built for %d strips." % smileds.leds_num_strips())
+num_strips = smileds.leds_num_strips()
+print("Built for %d strips." % num_strips)
 
 row = 0
 t = 0.0
