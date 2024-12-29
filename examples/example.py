@@ -13,6 +13,7 @@ num_strips = 8
 # init the smi module with an initial brightness of 25%
 smileds.leds_init(num_leds, 25)
 smileds.leds_clear()
+print("Built for %d strips." % smileds.leds_num_strips())
 
 row = 0
 t = 0.0
