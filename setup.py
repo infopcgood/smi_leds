@@ -29,7 +29,8 @@ def get_compile_flags():
         nchans = 8
 
     print("Building smi_leds extension for %d channels" % nchans)
-    compile_flags.append("-O2 -DLED_NCHANS=%d" % nchans)
+    compile_flags.append("-DLED_NCHANS=%d" % nchans)
+    compile_flags.append("-O2")
 
     return compile_flags
 
@@ -44,7 +45,7 @@ with open(readme, "r") as f:
     long_description=f.read()
 
 setup(name = "smileds",
-      version = "2024.12.29.1",
+      version = "2024.12.29.2",
       ext_modules = [Extension("smileds",
                                ["python/module.c",
                                "python/libsmi_leds.c",
