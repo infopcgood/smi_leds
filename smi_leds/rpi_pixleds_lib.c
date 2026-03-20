@@ -318,7 +318,7 @@ void leds_send()
     }
 #endif
     start_smi(&vc_mem);
-    usleep(2850);
+    usleep(10);
 }
 
 void leds_set(uint8_t *buffer)
