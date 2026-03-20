@@ -56,8 +56,8 @@ out to 8 (or 16) strips. If you have 4 strips, send 4 strips of data and then
 
 ## OS Choice
 
-Currently this code only works on a 32 bit Raspberry Pi OS images. 64 bit images are
-currently not supported, but I'll see about getting those working as well.
+This project is built and tested for Raspberry Pi OS distributions. Both 32-bit and 64-bit 
+versions are supported. The project may work but is not tested on other Linux distributions.
 
 ## Raspberry Pi Setup
 
