@@ -20,18 +20,18 @@
 
 
 #if PHYS_REG_BASE == PI_4_REG_BASE        // Timings for RPi v4 (1.5 GHz)
-#define SMI_TIMING       10, 15, 30, 15    // 400 ns cycle time
+#define SMI_TIMING       10, 8, 32, 8    // 320 ns cycle time
 #else                                   // Timings for RPi v0-3 (1 GHz)
-#define SMI_TIMING       10, 10, 20, 10   // 400 ns cycle time
+#define SMI_TIMING       10, 8, 14, 8   // TODO: 300 ns cycle time, current 400 ns
 #endif
 
 #define LED_D0_PIN      8   // GPIO pin for D0 output
 // Now defined via CMake
 //#define LED_NCHANS      8   // Number of LED channels (8 or 16)
 #define LED_NBITS       24  // Number of data bits per LED
-#define LED_PREBITS     4   // Number of zero bits before LED data
-#define LED_POSTBITS    4   // Number of zero bits after LED data
-#define BIT_NPULSES     3   // Number of O/P pulses per LED bit
+#define LED_PREBITS     100   // Number of zero bits before LED data
+#define LED_POSTBITS    100   // Number of zero bits after LED data
+#define BIT_NPULSES     4   // Number of O/P pulses per LED bit
 #define CHAN_MAXLEDS    450 // Maximum number of LEDs per channel. NOTE: more than 450 isnt possible somehow.
 #define REQUEST_THRESH  2   // DMA request threshold
 #define DMA_CHAN        10  // DMA channel to use
@@ -195,6 +195,7 @@ bool leds_init(int init_led_count, uint8_t brightness_arg)
 #endif
         tx_offset[1]=0x00; //will be changed via setPixel
         tx_offset[2]=0x00; //stays this way
+	tx_offset[3]=0x00; //stays this way too
         tx_offset += BIT_NPULSES;
     };
 
@@ -256,6 +257,7 @@ void leds_set_pixel(uint8_t  channel, uint16_t  pixel,  color_t color)
         else
             tx_offset[1]&= channel_off_mask;
         // tx_offset[2] always 0x0000
+	// tx_offset[3] always 0x0000
 
         tx_offset += BIT_NPULSES;
         rgb_mask=rgb_mask>>1;
@@ -264,7 +266,7 @@ void leds_set_pixel(uint8_t  channel, uint16_t  pixel,  color_t color)
 }
 
 // Set Tx data for 8 or 16 chans, 1 LED per chan, given 1 RGB val per chan
-// Logic 1 is 0.8us high, 0.4 us low, logic 0 is 0.4us high, 0.8us low
+// Logic 1 is 0.6us high, 0.6 us low, logic 0 is 0.3us high, 0.9us low
 void rgb_txdata(int *rgbs, TXDATA_T *txd)
 {
     int i, n, msk;
@@ -277,8 +279,8 @@ void rgb_txdata(int *rgbs, TXDATA_T *txd)
         // 1st byte or word is a high pulse on all lines
         txd[0] = (TXDATA_T)0xffff;
         // 2nd has high or low bits from data
-        // 3rd is a low pulse
-        txd[1] = txd[2] = 0;
+        // 3rd,4th is a low pulse
+        txd[1] = txd[2] = txd[3] = 0;
         for (i=0; i<LED_NCHANS; i++)
         {
             if (rgbs[i] & msk)
@@ -332,6 +334,7 @@ void leds_set(uint8_t *buffer)
     for(src = buffer, dest = scaled_buf, i = 0; i < scaled_size; dest++, i++)
     {
         ptr = (uint8_t *)dest;
+	// *(ptr + 3) = (int)*(src++) * (int)brightness / 100;
         *(ptr + 2) = (int)*(src++) * (int)brightness / 100;
         *(ptr + 1) = (int)*(src++) * (int)brightness / 100;
         *(ptr + 0) = (int)*(src++) * (int)brightness / 100;
@@ -349,12 +352,13 @@ void leds_set(uint8_t *buffer)
             // 1st byte or word is a high pulse on all lines
             txd[0] = (TXDATA_T)0xffff;
             // 2nd has high or low bits from data
-            // 3rd is a low pulse
-            txd[1] = txd[2] = 0;
+            // 3rd,4th is a low pulse
+            txd[1] = txd[2] = txd[3] = 0;
             for (i=0; i<LED_NCHANS; i++)
             {
                 if (scaled_buf[led_count * i + led] & msk)
                     txd[1] |= (1 << i);
+		    txd[2] |= (1 << i);
             }
             txd += BIT_NPULSES;
         }
