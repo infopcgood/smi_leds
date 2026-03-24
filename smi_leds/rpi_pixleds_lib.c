@@ -19,10 +19,26 @@
 #include "rpi_smi_defs.h"
 
 
-#if PHYS_REG_BASE == PI_4_REG_BASE        // Timings for RPi v4 (1.5 GHz)
-#define SMI_TIMING       10, 8, 32, 8    // 320 ns cycle time
-#else                                   // Timings for RPi v0-3 (1 GHz)
-#define SMI_TIMING       10, 8, 14, 8   // TODO: 300 ns cycle time, current 400 ns
+// Protocol timing tunables (ns and pulse counts).
+// Defaults are chosen for chipsets requiring:
+// T0H = 220..380ns, T1H = 580ns..1us, T0L/T1L = 580ns..1us, bit time >= 1.25us.
+// With 4 pulses per bit and 320ns pulse width:
+//   bit 0: 1000 -> T0H=320ns, T0L=960ns, total=1.28us
+//   bit 1: 1100 -> T1H=640ns, T1L=640ns, total=1.28us
+#ifndef LED_SMI_NS
+#define LED_SMI_NS       10
+#endif
+#ifndef LED_SMI_SETUP
+#define LED_SMI_SETUP    8
+#endif
+#ifndef LED_SMI_STROBE
+#define LED_SMI_STROBE   16
+#endif
+#ifndef LED_SMI_HOLD
+#define LED_SMI_HOLD     8
+#endif
+#ifndef LED_RESET_US
+#define LED_RESET_US     300
 #endif
 
 #define LED_D0_PIN      8   // GPIO pin for D0 output
@@ -180,7 +196,9 @@ bool leds_init(int init_led_count, uint8_t brightness_arg)
     brightness=brightness_arg;
 
     map_devices();
-    init_smi(LED_NCHANS > 8 ? SMI_16_BITS : SMI_8_BITS, SMI_TIMING);
+    // setup+strobe+hold = 32 cycles, at 10ns cycle gives a 320ns sample period.
+    init_smi(LED_NCHANS > 8 ? SMI_16_BITS : SMI_8_BITS,
+             LED_SMI_NS, LED_SMI_SETUP, LED_SMI_STROBE, LED_SMI_HOLD);
     map_uncached_mem(&vc_mem, VC_MEM_SIZE);
     setup_smi_dma(&vc_mem, TX_BUFF_LEN(led_count));
 
@@ -320,7 +338,8 @@ void leds_send()
     }
 #endif
     start_smi(&vc_mem);
-    usleep(10);
+    // Keep line low long enough for latch/reset timing.
+    usleep(LED_RESET_US);
 }
 
 void leds_set(uint8_t *buffer)
