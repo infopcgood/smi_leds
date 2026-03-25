@@ -55,7 +55,7 @@ setup(name = "smileds",
                                include_dirs=["include"])],
       install_requires=[ "wheel" ],
       py_modules=["detect_rpi"],
-      author="Jeremy P Bentham, Robert Kaye",
+      author="Jeremy P Bentham, Robert Kaye, infopcgood",
       classifiers=[
           "Programming Language :: Python :: 3",
           "Development Status :: 4 - Beta",
